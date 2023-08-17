@@ -50,6 +50,7 @@ data = [
 examples of use:
 
 ```php
+<?php
 imagegraph(750, 750, "./fonts/GmarketSansMedium.otf", 0, 0, 75, 100, 750, 750, [
     "title" => "INPUT CHART TITLE",
     "type" => "bar",
@@ -83,4 +84,5 @@ imagegraph(750, 750, "./fonts/GmarketSansMedium.otf", 0, 0, 75, 100, 750, 750, [
         ]
     ]
 ]);
+?>
 ```
