@@ -52,6 +52,13 @@ examples of use:
 
 ```php
 <?php
+require_once "./__module__lib__gd__.php";
+
+$imgData = imagecreatetruecolor(750, 750);
+
+$transparent = rgba($imgData, 255, 255, 255, 127);
+imagefill($imgData, 0, 0, $transparent);
+
 $data = [
     "title" => "IT'S EXAMPLE",
     "type" => "bar",
@@ -78,5 +85,8 @@ for ($i = 0; $i < count(<your-datas>); $i++) {
 }
 
 imagegraph($imgData, $defaultFont, 0, 0, 75, 100, 750, 750, $data);
+
+imagepng($imgData);
+imagedestroy($imgData);
 ?>
 ```
