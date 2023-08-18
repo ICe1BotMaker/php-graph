@@ -3,7 +3,12 @@ A dirty-looking php graph.
 
 *The module file is `__module__lib__gd__.php`.*
 
-<br>
+
+> **WARNING! This module only works in `php 8.0`**
+> #### Because it is still beta,
+> **the line graph does not work.**
+> 
+
 
 **To set `php.ini` before use:**
 
@@ -18,29 +23,29 @@ A dirty-looking php graph.
 The module is now ready for use! The parameters can be set as follows.
 
 ```
-canvasWidth = (number);
-canvasHeight = (number);
+canvasWidth = (number); // Width of canvas
+canvasHeight = (number); // Height of canvas
 
-defaultFont = (string);
+defaultFont = (string); // Set the default font.
 
-chartX = (number);
-chartY = (number);
+chartX = (number); // Chart Position x
+chartY = (number); // Chart Position y
 
-chartOffsetX = (number);
-chartOffsetY = (number);
+chartOffsetX = (number); // Width of the element to which external elements other than the figure will fit in "600x600"
+chartOffsetY = (number); // Height of the element to which external elements other than the figure will fit in "600x600"
 
-chartWidth = (number);
-chartHeight = (number);
+chartWidth = (number); // Width of chart
+chartHeight = (number); // Height of chart
 
-data = [
-    title = (string);
-    type = (string);
-    chart_data = [
-        square_height = (number);
-        data_colors = (array);
-        min_value = (number);
-        max_value = (number);
-        datas = (array);
+data = [ // Chart Info
+    title = (string); // Chart Title
+    type = (string); // Chart Type (bar | line)
+    chart_data = [ // Chart Data
+        square_height = (number); // Chart Bar Height
+        data_colors = (array); // Chart Bar Colors
+        min_value = (number); // Chart Min Value
+        max_value = (number); // Chart Max Value
+        datas = (array); // Chart Datas
     ]
 ]
 ```
