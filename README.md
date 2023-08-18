@@ -54,7 +54,9 @@ examples of use:
 <?php
 require_once "./__module__lib__gd__.php";
 
-$imgData = imagecreatetruecolor(750, 750);
+header("Content-type: image/png");
+
+$imgData = imagecreatetruecolor(825, 750);
 
 $transparent = rgba($imgData, 255, 255, 255, 127);
 imagefill($imgData, 0, 0, $transparent);
@@ -76,15 +78,15 @@ $data = [
     ]
 ];
 
-for ($i = 0; $i < count(<your-datas>); $i++) {
+for ($i = 0; $i < 4; $i++) {
     $data["chart_data"]["datas"][$i] = [
-        "name" => <your-datas>[$i]-><your-key>,
-        "legend" => <your-datas>[$i]-><your-key>,
-        "value" => <your-datas>[$i]-><your-key>
+        "name" => "a" . $i,
+        "legend" => "abcdef" . $i,
+        "value" => $i * 5
     ];
 }
 
-imagegraph($imgData, $defaultFont, 0, 0, 75, 100, 750, 750, $data);
+imagegraph($imgData, "./fonts/GmarketSansMedium.otf", 0, 0, 75, 100, 750, 750, $data);
 
 imagepng($imgData);
 imagedestroy($imgData);
