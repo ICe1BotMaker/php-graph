@@ -7,7 +7,6 @@ A dirty-looking php graph.
 > **WARNING! This module only works in `php 8.0`**
 > #### Because it is still beta,
 > **the line graph does not work.**
-> 
 
 
 **To set `php.ini` before use:**
@@ -22,7 +21,7 @@ A dirty-looking php graph.
 
 The module is now ready for use! The parameters can be set as follows.
 
-```
+```conf
 canvasWidth = (number); // Width of canvas
 canvasHeight = (number); // Height of canvas
 
