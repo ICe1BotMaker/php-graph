@@ -1,6 +1,4 @@
 <?php
-header("Content-type: image/png");
-
 function rgba($imgData, $red, $green, $blue, $alpha = 0) {
     return imagecolorallocatealpha($imgData, $red, $green, $blue, $alpha);
 }
@@ -48,8 +46,7 @@ function wave($imageData, $width, $height, $steps, $x1, $text_color) {
 }
 
 function imagegraph(
-    $canvasWidth = 750, 
-    $canvasHeight = 750, 
+    $imgData,
 
     $defaultFont = "./fonts/GmarketSansMedium.otf", 
 
@@ -74,15 +71,10 @@ function imagegraph(
         ]
     ]
     ) {
-    $imgData = imagecreatetruecolor($canvasWidth, $canvasHeight);
-
     $whiteColor = rgba($imgData, 255, 255, 255);
     $blackColor = rgba($imgData, 0, 0, 0);
     $grayColor = rgba($imgData, 150, 150, 150);
     $smokeColor = rgba($imgData, 200, 200, 200);
-    $transparent = rgba($imgData, 255, 255, 255, 127);
-
-    imagefill($imgData, 0, 0, $transparent);
 
     // TITLE
     text($imgData, $defaultFont, 18, $data["title"], 375 + $chartX, 65 + $chartY, $blackColor);
@@ -101,14 +93,23 @@ function imagegraph(
 
     // CHART UNIT
     for ($i = $data["chart_data"]["min_value"]; $i <= $data["chart_data"]["max_value"]; $i++) {
-        if ($i % 2 == 0) text($imgData, $defaultFont, 8, $i, 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartY + $chartHeight - $chartOffsetY + 15, $blackColor);
+        if ($i % 2 == 0) text($imgData, $defaultFont, 8, $i, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartY + $chartHeight - $chartOffsetY + 15, $blackColor);
 
         if ($i % 2 == 0) {
             imagesetthickness($imgData, 1);
-            imagelinedotted($imgData, 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartOffsetY + $chartY, 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartHeight - $chartOffsetY + $chartY, 10, $smokeColor);
+            imagelinedotted($imgData, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartOffsetY + $chartY, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartHeight - $chartOffsetY + $chartY, 10, $smokeColor);
         }
     
-        imageline($imgData, 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartY + $chartHeight - $chartOffsetY + 3, 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartY + $chartHeight - $chartOffsetY - 5, $i % 2 == 0 ? $blackColor : $smokeColor);
+        imageline($imgData, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartY + $chartHeight - $chartOffsetY + 3, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartY + $chartHeight - $chartOffsetY - 5, $i % 2 == 0 ? $blackColor : $smokeColor);
+    }
+
+    for ($i = 0; $i < 23; $i++) {
+        if ($i % 2 == 0) {
+            imagesetthickness($imgData, 1);
+            imagelinedotted($imgData, 100 + ($i * 25) + $chartX, $chartOffsetY + $chartY, 100 + ($i * 25) + $chartX, $chartHeight - $chartOffsetY + $chartY, 10, $smokeColor);
+        }
+    
+        imageline($imgData, 75 + ($i * 25) + $chartX, $chartY + $chartHeight - $chartOffsetY + 3, 75 + ($i * 25) + $chartX, $chartY + $chartHeight - $chartOffsetY - 5, $i % 2 == 0 ? $blackColor : $smokeColor);
     }
 
     // CHART DATA
@@ -124,14 +125,15 @@ function imagegraph(
             imagesetthickness($imgData, 0);
             imagefilledrectangle($imgData, $chartOffsetX + $chartX, $chartOffsetY + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + 50 + $chartY, $chartOffsetX + $chartX + $chart1Data[$i]["value"] * (600 / $data["chart_data"]["max_value"]), $chartOffsetY + $squareHeight + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + 50 + $chartY, rgba($imgData, $dataColors[$i][0], $dataColors[$i][1], $dataColors[$i][2]));
 
-            text($imgData, $defaultFont, 8, $chart1Data[$i]["name"], $chartOffsetX - 25 + $chartX, $chartOffsetY + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + 110 + $chartY, $blackColor);
+            text($imgData, $defaultFont, 8, $chart1Data[$i]["name"], $chartOffsetX - 25 + $chartX, $chartOffsetY + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + $chartY + 60, $blackColor);
             imagefttext($imgData, 12, 0, $chartOffsetX + $chartX + 10, $chartOffsetY + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + 75 + $chartY, $whiteColor, $defaultFont, $chart1Data[$i]["value"]);
 
-            if ($i < 2) {
-                category($imgData, $defaultFont, 10, $chart1Data[$i]["name"], $i * 250 + $chartOffsetX + $chartX, $chartHeight - $chartOffsetY + 25 + $chartY + 10, rgba($imgData, $dataColors[$i][0], $dataColors[$i][1], $dataColors[$i][2]), $blackColor);
-            } else {
-                category($imgData, $defaultFont, 10, $chart1Data[$i]["name"], ($i - 2) * 250 + $chartOffsetX + $chartX, $chartHeight - $chartOffsetY + 50 + $chartY + 10, rgba($imgData, $dataColors[$i][0], $dataColors[$i][1], $dataColors[$i][2]), $blackColor);
+            if ($idx % (isset($chart1Data[$i]["legend"]) ? (strlen($chart1Data[$i]["legend"]) >= 5 ? 3 : 6) : (strlen($chart1Data[$i]["name"]) >= 5 ? 3 : 6)) == 0) {
+                $idx = 0;
+                $lineIdx += 1;
             }
+            category($imgData, $defaultFont, 10, isset($chart1Data[$i]["legend"]) ? $chart1Data[$i]["legend"] : $chart1Data[$i]["name"], $chartX + $chartOffsetX + ($idx * (isset($chart1Data[$i]["legend"]) ? (strlen($chart1Data[$i]["legend"]) + 200) : (strlen($chart1Data[$i]["name"]) + 200))), $chartHeight - $chartOffsetY + ($lineIdx * 25), rgba($imgData, $dataColors[$i][0], $dataColors[$i][1], $dataColors[$i][2]), $blackColor);
+            $idx += 1;
         } elseif ($data["type"] == "line") {
             if ($i != 0) {
                 imagesetthickness($imgData, 5);
@@ -146,101 +148,4 @@ function imagegraph(
             $idx += 1;
         }
     }
-
-    imagepng($imgData);
-    imagedestroy($imgData);
 }
-
-// imagegraph(750, 750, "./fonts/GmarketSansMedium.otf", 0, 0, 75, 100, 750, 750, [
-//     "title" => "INPUT CHART TITLE",
-//     "type" => "line", // (line | bar)
-//     "chart_data" => [
-//         "square_height" => 75,
-//         "data_colors" => [
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//             [rand(0, 255), rand(0, 255), rand(0, 255)],
-//         ],
-//         "min_value" => 0,
-//         "max_value" => 48,
-//         "datas" => [
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//             [
-//                 "name" => "test1",
-//                 "value" => rand(0, 48)
-//             ],
-//         ]
-//     ]
-// ]);
