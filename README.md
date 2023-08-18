@@ -21,10 +21,7 @@ A dirty-looking php graph.
 
 The module is now ready for use! The parameters can be set as follows.
 
-```conf
-canvasWidth = (number); // Width of canvas
-canvasHeight = (number); // Height of canvas
-
+```
 defaultFont = (string); // Set the default font.
 
 chartX = (number); // Chart Position x
@@ -55,38 +52,31 @@ examples of use:
 
 ```php
 <?php
-imagegraph(750, 750, "./fonts/GmarketSansMedium.otf", 0, 0, 75, 100, 750, 750, [
-    "title" => "INPUT CHART TITLE",
+$data = [
+    "title" => "IT'S EXAMPLE",
     "type" => "bar",
     "chart_data" => [
         "square_height" => 75,
         "data_colors" => [
-            [rand(0, 255), rand(0, 255), rand(0, 255)],
-            [rand(0, 255), rand(0, 255), rand(0, 255)],
-            [rand(0, 255), rand(0, 255), rand(0, 255)],
-            [rand(0, 255), rand(0, 255), rand(0, 255)],
+            [35 + 25, 25 + 25, 66 + 25],
+            [94, 84, 142],
+            [159, 134, 192],
+            [190, 149, 196],
         ],
         "min_value" => 0,
-        "max_value" => 48,
-        "datas" => [
-            [
-                "name" => "test1",
-                "value" => rand(0, 48)
-            ],
-            [
-                "name" => "test2",
-                "value" => rand(0, 48)
-            ],
-            [
-                "name" => "test3",
-                "value" => rand(0, 48)
-            ],
-            [
-                "name" => "test4",
-                "value" => rand(0, 48)
-            ]
-        ]
+        "max_value" => 24,
+        "datas" => []
     ]
-]);
+];
+
+for ($i = 0; $i < count(<your-datas>); $i++) {
+    $data["chart_data"]["datas"][$i] = [
+        "name" => <your-datas>[$i]-><your-key>,
+        "legend" => <your-datas>[$i]-><your-key>,
+        "value" => <your-datas>[$i]-><your-key>
+    ];
+}
+
+imagegraph($imgData, $defaultFont, 0, 0, 75, 100, 750, 750, $data);
 ?>
 ```
