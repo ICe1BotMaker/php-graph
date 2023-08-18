@@ -83,33 +83,29 @@ function imagegraph(
     imagesetthickness($imgData, 1);
     imagerectangle($imgData, $chartOffsetX + $chartX, $chartOffsetY + $chartY, $chartWidth - $chartOffsetX + $chartX, $chartHeight - $chartOffsetY + $chartY, $grayColor);
 
-    for ($i = 0; $i < 11; $i++) {
+    for ($i = 0; $i < $data["chart_data"]["max_value"] / 2; $i++) {
         imagesetthickness($imgData, 1);
-        imagelinedotted($imgData, 125 + ($i * 50) + $chartX, $chartOffsetY + $chartY, 125 + ($i * 50) + $chartX, $chartHeight - $chartOffsetY + $chartY, 2, $smokeColor);
+        imagelinedotted($imgData, $chartX + 75 + (($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"])) / 2) * 2 + (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))) * 2, $chartOffsetY + $chartY, $chartX + 75 + (($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"])) / 2) * 2 + (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))) * 2, $chartHeight - $chartOffsetY + $chartY, 2, $smokeColor);
     
-        imagesetthickness($imgData, 1);
-        imagelinedotted($imgData, $chartOffsetX + $chartX, 125 + ($i * 50) + $chartY, $chartWidth - $chartOffsetX + $chartX, 125 + ($i * 50) + $chartY, 2, $smokeColor);
+        if ($i < 11) {
+            imagesetthickness($imgData, 1);
+            imagelinedotted($imgData, $chartOffsetX + $chartX, 125 + ($i * 50) + $chartY, $chartWidth - $chartOffsetX + $chartX, 125 + ($i * 50) + $chartY, 2, $smokeColor);
+        }
     }
 
     // CHART UNIT
     for ($i = $data["chart_data"]["min_value"]; $i <= $data["chart_data"]["max_value"]; $i++) {
         if ($i % 2 == 0) text($imgData, $defaultFont, 8, $i, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartY + $chartHeight - $chartOffsetY + 15, $blackColor);
 
-        if ($i % 2 == 0) {
+        if ($i % 2 == 0 && $i != $data["chart_data"]["max_value"]) {
             imagesetthickness($imgData, 1);
-            imagelinedotted($imgData, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartOffsetY + $chartY, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartHeight - $chartOffsetY + $chartY, 10, $smokeColor);
+            imagelinedotted($imgData, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"])) / 2) * 2 + (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"])), $chartOffsetY + $chartY, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"])) / 2) * 2 + (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"])), $chartHeight - $chartOffsetY + $chartY, 10, $smokeColor);
         }
-    
+
         imageline($imgData, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartY + $chartHeight - $chartOffsetY + 3, $chartX + 75 + ($i * (($chartWidth - ($chartOffsetX * 2)) / ($data["chart_data"]["max_value"]))), $chartY + $chartHeight - $chartOffsetY - 5, $i % 2 == 0 ? $blackColor : $smokeColor);
     }
 
-    for ($i = 0; $i < 23; $i++) {
-        if ($i % 2 == 0) {
-            imagesetthickness($imgData, 1);
-            imagelinedotted($imgData, 100 + ($i * 25) + $chartX, $chartOffsetY + $chartY, 100 + ($i * 25) + $chartX, $chartHeight - $chartOffsetY + $chartY, 10, $smokeColor);
-        }
-    
-        imageline($imgData, 75 + ($i * 25) + $chartX, $chartY + $chartHeight - $chartOffsetY + 3, 75 + ($i * 25) + $chartX, $chartY + $chartHeight - $chartOffsetY - 5, $i % 2 == 0 ? $blackColor : $smokeColor);
+    for ($i = 0; $i <= 24; $i++) {
     }
 
     // CHART DATA
@@ -125,15 +121,10 @@ function imagegraph(
             imagesetthickness($imgData, 0);
             imagefilledrectangle($imgData, $chartOffsetX + $chartX, $chartOffsetY + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + 50 + $chartY, $chartOffsetX + $chartX + $chart1Data[$i]["value"] * (600 / $data["chart_data"]["max_value"]), $chartOffsetY + $squareHeight + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + 50 + $chartY, rgba($imgData, $dataColors[$i][0], $dataColors[$i][1], $dataColors[$i][2]));
 
-            text($imgData, $defaultFont, 8, $chart1Data[$i]["name"], $chartOffsetX - 25 + $chartX, $chartOffsetY + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + $chartY + 60, $blackColor);
+            text($imgData, $defaultFont, 8, $chart1Data[$i]["name"], $chartOffsetX - 25 + $chartX, $chartOffsetY + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + $chartY + 55 + $squareHeight / 2, $blackColor);
             imagefttext($imgData, 12, 0, $chartOffsetX + $chartX + 10, $chartOffsetY + (750 / (count($data["chart_data"]["datas"])) / 2 * $i) + 75 + $chartY, $whiteColor, $defaultFont, $chart1Data[$i]["value"]);
 
-            if ($idx % (isset($chart1Data[$i]["legend"]) ? (strlen($chart1Data[$i]["legend"]) >= 5 ? 3 : 6) : (strlen($chart1Data[$i]["name"]) >= 5 ? 3 : 6)) == 0) {
-                $idx = 0;
-                $lineIdx += 1;
-            }
-            category($imgData, $defaultFont, 10, isset($chart1Data[$i]["legend"]) ? $chart1Data[$i]["legend"] : $chart1Data[$i]["name"], $chartX + $chartOffsetX + ($idx * (isset($chart1Data[$i]["legend"]) ? (strlen($chart1Data[$i]["legend"]) + 200) : (strlen($chart1Data[$i]["name"]) + 200))), $chartHeight - $chartOffsetY + ($lineIdx * 25), rgba($imgData, $dataColors[$i][0], $dataColors[$i][1], $dataColors[$i][2]), $blackColor);
-            $idx += 1;
+            category($imgData, $defaultFont, 10, isset($chart1Data[$i]["legend"]) ? $chart1Data[$i]["legend"] : $chart1Data[$i]["name"], $chartX + $chartWidth - $chartOffsetX + 25, $chartY + $chartOffsetY + 15 + ($i * 25), rgba($imgData, $dataColors[$i][0], $dataColors[$i][1], $dataColors[$i][2]), $blackColor);
         } elseif ($data["type"] == "line") {
             if ($i != 0) {
                 imagesetthickness($imgData, 5);
@@ -149,3 +140,40 @@ function imagegraph(
         }
     }
 }
+
+// header("Content-type: image/png");
+
+// $imgData = imagecreatetruecolor(825, 750);
+
+// $transparent = rgba($imgData, 255, 255, 255, 127);
+// imagefill($imgData, 0, 0, $transparent);
+
+// $data = [
+//     "title" => "IT'S EXAMPLE",
+//     "type" => "bar",
+//     "chart_data" => [
+//         "square_height" => 75,
+//         "data_colors" => [
+//             [35 + 25, 25 + 25, 66 + 25],
+//             [94, 84, 142],
+//             [159, 134, 192],
+//             [190, 149, 196],
+//         ],
+//         "min_value" => 0,
+//         "max_value" => 24,
+//         "datas" => []
+//     ]
+// ];
+
+// for ($i = 0; $i < 4; $i++) {
+//     $data["chart_data"]["datas"][$i] = [
+//         "name" => "a" . $i,
+//         "legend" => "abcdef" . $i,
+//         "value" => $i * 5
+//     ];
+// }
+
+// imagegraph($imgData, "./fonts/GmarketSansMedium.otf", 0, 0, 75, 100, 750, 750, $data);
+
+// imagepng($imgData);
+// imagedestroy($imgData);
